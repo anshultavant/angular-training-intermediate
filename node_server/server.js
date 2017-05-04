@@ -28,9 +28,11 @@ function processForm(req, res) {
             'content-type' : 'text/plain'
         });
 
-        res.end(util.inspect({
-            fields : fields
-        }));
+        // res.end(util.inspect({
+        //     fields : fields
+        // }));
+
+        res.end(JSON.stringify({fields: fields}))
 
         console.log('posted fields:\n');
         console.log(util.inspect({

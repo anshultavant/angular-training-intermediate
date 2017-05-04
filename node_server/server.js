@@ -12,7 +12,16 @@ var server = http.createServer(function(req, res){
     }
 
     if(req.method.toLowerCase() == 'get') {
-        console.log('GET request received...');
+        var data = {
+            data:{
+                languages:[
+                    'English','Spanish','French','German'
+                ]
+            }
+        };
+        var responseData = JSON.stringify(data);
+        res.end(responseData);
+        console.log("get: ", responseData)
         return;
     }
 
@@ -24,6 +33,9 @@ function processForm(req, res) {
     var form = new formidable.IncomingForm();
 
     form.parse(req, function(err, fields) {
+
+        fields.id = "dummyId";
+
         res.writeHead(200, {
             'content-type' : 'text/plain'
         });

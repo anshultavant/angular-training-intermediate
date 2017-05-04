@@ -21,7 +21,7 @@ var FormPosterService = (function () {
         this.httpUrl = 'http://localhost:3100/';
     }
     FormPosterService.prototype.handleError = function (error) {
-        console.log('Post error: ', error);
+        console.log('Handle Error Post error: ', error);
         return Rx_1.Observable.throw(error.statusText);
     };
     FormPosterService.prototype.postEmployeeForm = function (employee) {
@@ -29,7 +29,21 @@ var FormPosterService = (function () {
         var body = JSON.stringify(employee);
         var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
         var options = new http_1.RequestOptions({ headers: headers });
-        return this._http.post(this.httpUrl, body, options).map(this.extractData).catch(this.handleError);
+        return this._http.post(this.httpUrl, body, options).
+            map(this.extractData).
+            catch(this.handleError);
+    };
+    FormPosterService.prototype.getLanguages = function () {
+        console.log("Getting languages");
+        var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+        var options = new http_1.RequestOptions({ headers: headers });
+        return this._http.get(this.httpUrl)
+            .map(this.extractLanguages)
+            .catch(this.handleError);
+    };
+    FormPosterService.prototype.extractLanguages = function (res) {
+        var body = res.json();
+        return body.data || {};
     };
     FormPosterService.prototype.extractData = function (res) {
         var body = res.json();

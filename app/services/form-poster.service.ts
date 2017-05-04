@@ -13,7 +13,7 @@ export class FormPosterService{
     httpUrl: string = 'http://localhost:3100/'
 
     handleError(error: any){
-        console.log('Post error: ', error);
+        console.log('Handle Error Post error: ', error);
         return Observable.throw(error.statusText);
     }
 
@@ -22,8 +22,23 @@ export class FormPosterService{
         let body = JSON.stringify(employee);
         let headers = new Headers({'Content-Type':'application/json'});
         let options = new RequestOptions({headers:headers});
-        return this._http.post(this.httpUrl,
-            body, options).map(this.extractData).catch(this.handleError);
+        return this._http.post(this.httpUrl, body, options).
+                        map(this.extractData).
+                        catch(this.handleError);
+    }
+
+    getLanguages(): Observable<any>{
+        console.log("Getting languages");
+        let headers = new Headers({'Content-Type':'application/json'});
+        let options = new RequestOptions({headers:headers});
+        return this._http.get(this.httpUrl)
+                        .map(this.extractLanguages)
+                        .catch(this.handleError)
+    }
+
+    extractLanguages(res: Response){
+        let body = res.json()
+        return body.data || {}
     }
 
     extractData(res: Response){

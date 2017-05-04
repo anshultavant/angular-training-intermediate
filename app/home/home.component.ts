@@ -8,12 +8,17 @@ import { FormPosterService } from '../services/form-poster.service'
 })
 export class HomeComponent {
 
-    constructor(private formService: FormPosterService){}
+    constructor(private formService: FormPosterService){
+        this.formService.getLanguages().subscribe(
+                    data => this.languages = data.languages,
+                    err => console.log('Error in getting languages : ', err)
+                );
+    }
 
     public pageTitle: string = 'Home';
     employee: Employee = new Employee('', '', true, 'other','default');
 
-    languages: string[] = ['Java', 'C++'];
+    languages: string[] = [];
     
     hasPrimaryLanguageError: boolean;
 
@@ -33,8 +38,9 @@ export class HomeComponent {
         console.log('Form to be submitted :'+ form.value);
         this.formService.postEmployeeForm(form.value).
                 subscribe(
-                    data => console.log('success: ',data),
-                    err => console.log('error', err)
+                    data => console.log('Subscribe call Back success: ',data),
+                    err => console.log('Subscribe call Back error', err)
                 )
+        return false;
     }
 }

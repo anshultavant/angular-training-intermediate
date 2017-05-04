@@ -14,10 +14,12 @@ var employee_1 = require("../models/employee");
 var form_poster_service_1 = require("../services/form-poster.service");
 var HomeComponent = (function () {
     function HomeComponent(formService) {
+        var _this = this;
         this.formService = formService;
         this.pageTitle = 'Home';
         this.employee = new employee_1.Employee('', '', true, 'other', 'default');
-        this.languages = ['Java', 'C++'];
+        this.languages = [];
+        this.formService.getLanguages().subscribe(function (data) { return _this.languages = data.languages; }, function (err) { return console.log('Error in getting languages : ', err); });
     }
     HomeComponent.prototype.firstNameToUpperCase = function (value) {
         if (value.length > 0)
@@ -32,7 +34,8 @@ var HomeComponent = (function () {
     HomeComponent.prototype.submitForm = function (form) {
         console.log('Form to be submitted :' + form.value);
         this.formService.postEmployeeForm(form.value).
-            subscribe(function (data) { return console.log('success: ', data); }, function (err) { return console.log('error', err); });
+            subscribe(function (data) { return console.log('Subscribe call Back success: ', data); }, function (err) { return console.log('Subscribe call Back error', err); });
+        return false;
     };
     return HomeComponent;
 }());

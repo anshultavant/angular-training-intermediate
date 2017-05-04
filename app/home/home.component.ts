@@ -18,7 +18,7 @@ export class HomeComponent {
     public pageTitle: string = 'Home';
     employee: Employee = new Employee('', '', true, 'other','default');
 
-    languages: string[] = [];
+    languages: string[] = ['Java', 'C++'];
     
     hasPrimaryLanguageError: boolean;
 

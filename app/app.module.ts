@@ -7,19 +7,23 @@ import { HomeComponent } from './home/home.component';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 import { FormPosterService } from './services/form-poster.service';
+import { CustomerComponent } from './home/customer.component'
+import { ReactiveFormsModule } from '@angular/forms'
 
 @NgModule({
   imports: [ 
     BrowserModule,
     HttpModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule.forRoot([
       {path: '', redirectTo: 'welcome', pathMatch: 'full'},
       {path: 'welcome', component: WelcomeComponent},     
-      {path: 'forms', component: HomeComponent}
+      {path: 'forms', component: HomeComponent},
+      {path: 'reactiveforms', component: CustomerComponent}      
     ])
   ],
-  declarations: [ AppComponent, WelcomeComponent, HomeComponent ],
+  declarations: [ AppComponent, WelcomeComponent, HomeComponent, CustomerComponent ],
   providers: [FormPosterService],
   bootstrap: [ AppComponent ]
 })

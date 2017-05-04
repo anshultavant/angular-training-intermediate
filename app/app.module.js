@@ -15,6 +15,8 @@ var home_component_1 = require("./home/home.component");
 var http_1 = require("@angular/http");
 var forms_1 = require("@angular/forms");
 var form_poster_service_1 = require("./services/form-poster.service");
+var customer_component_1 = require("./home/customer.component");
+var forms_2 = require("@angular/forms");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -26,13 +28,15 @@ AppModule = __decorate([
             platform_browser_1.BrowserModule,
             http_1.HttpModule,
             forms_1.FormsModule,
+            forms_2.ReactiveFormsModule,
             router_1.RouterModule.forRoot([
                 { path: '', redirectTo: 'welcome', pathMatch: 'full' },
                 { path: 'welcome', component: welcome_component_1.WelcomeComponent },
-                { path: 'forms', component: home_component_1.HomeComponent }
+                { path: 'forms', component: home_component_1.HomeComponent },
+                { path: 'reactiveforms', component: customer_component_1.CustomerComponent }
             ])
         ],
-        declarations: [app_component_1.AppComponent, welcome_component_1.WelcomeComponent, home_component_1.HomeComponent],
+        declarations: [app_component_1.AppComponent, welcome_component_1.WelcomeComponent, home_component_1.HomeComponent, customer_component_1.CustomerComponent],
         providers: [form_poster_service_1.FormPosterService],
         bootstrap: [app_component_1.AppComponent]
     })

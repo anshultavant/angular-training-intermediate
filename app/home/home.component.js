@@ -18,7 +18,7 @@ var HomeComponent = (function () {
         this.formService = formService;
         this.pageTitle = 'Home';
         this.employee = new employee_1.Employee('', '', true, 'other', 'default');
-        this.languages = [];
+        this.languages = ['Java', 'C++'];
         this.formService.getLanguages().subscribe(function (data) { return _this.languages = data.languages; }, function (err) { return console.log('Error in getting languages : ', err); });
     }
     HomeComponent.prototype.firstNameToUpperCase = function (value) {

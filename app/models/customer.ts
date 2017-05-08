@@ -1,6 +1,8 @@
 export class Customer{
-    constructor(       
-        ){
-        
-    }
+    constructor(      
+            public firstName = '',
+            public lastName = '',
+            public email = '',
+            public sendCatalog = true
+        ){}
 }

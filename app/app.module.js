@@ -17,6 +17,7 @@ var forms_1 = require("@angular/forms");
 var form_poster_service_1 = require("./services/form-poster.service");
 var customer_component_1 = require("./home/customer.component");
 var forms_2 = require("@angular/forms");
+var dynaform_component_1 = require("./home/dynaform.component");
 var AppModule = (function () {
     function AppModule() {
     }
@@ -33,10 +34,11 @@ AppModule = __decorate([
                 { path: '', redirectTo: 'welcome', pathMatch: 'full' },
                 { path: 'welcome', component: welcome_component_1.WelcomeComponent },
                 { path: 'forms', component: home_component_1.HomeComponent },
-                { path: 'reactiveforms', component: customer_component_1.CustomerComponent }
+                { path: 'reactiveforms', component: customer_component_1.CustomerComponent },
+                { path: 'dynamicforms', component: dynaform_component_1.DynaFormComponent }
             ])
         ],
-        declarations: [app_component_1.AppComponent, welcome_component_1.WelcomeComponent, home_component_1.HomeComponent, customer_component_1.CustomerComponent],
+        declarations: [app_component_1.AppComponent, welcome_component_1.WelcomeComponent, home_component_1.HomeComponent, customer_component_1.CustomerComponent, dynaform_component_1.DynaFormComponent],
         providers: [form_poster_service_1.FormPosterService],
         bootstrap: [app_component_1.AppComponent]
     })

@@ -10,8 +10,9 @@ import { Customer } from '../models/customer';
 export class CustomerComponent implements OnInit {
     customerForm: FormGroup
     customer: Customer = new Customer();
-    emailMessage: string
-
+    emailMessage: string = ''
+    emailConfirmMessage: string = ''
+    
     constructor(private fb: FormBuilder){
 
     }
@@ -28,11 +29,10 @@ export class CustomerComponent implements OnInit {
 
         this.customerForm = this.fb.group({
             firstName: ['',[Validators.required, Validators.minLength(3)]],
-            lastName: ['',[Validators.required, Validators.maxLength(5), Validators.minLength(3)]],
-            // emailGroup: ['',[Validators.required, Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
+            lastName: ['',[Validators.required, Validators.maxLength(5), Validators.minLength(3)]],            
             emailGroup: this.fb.group({
                 email:['',[Validators.required, Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
-                confirmEmail:['',[Validators.required]]
+                confirmEmail:['',Validators.required]
             }, {validator: emailMatcher}),
             phone: '',
             notification: '',
@@ -41,20 +41,32 @@ export class CustomerComponent implements OnInit {
         })
 
         this.customerForm.get('notification').valueChanges.subscribe(value => this.setNotification(value))
-        const emailCtrl = this.customerForm.get('emailGroup.email')
-        emailCtrl.valueChanges.debounceTime(1000).subscribe(value => this.setMessage(emailCtrl))
+        const emailCtrl = this.customerForm.get('emailGroup');
+        emailCtrl.valueChanges.subscribe(value => this.setMessage(emailCtrl))
     }
 
     setMessage(absCtrl: AbstractControl): void{
-        this.emailMessage = ''
+        const emailCtrl = absCtrl.get('email');
+        const emailConfirmCtrl = absCtrl.get('confirmEmail');
         if((absCtrl.touched || absCtrl.dirty) && absCtrl.errors){
-            this.emailMessage = Object.keys(absCtrl.errors).map(key => this.validationMessages[key]).join('')
+            this.emailConfirmMessage = Object.keys(absCtrl.errors).map(key => this.confirmEmailValidationMessages[key]).join('') 
+        }
+        if((emailCtrl.touched || emailCtrl.dirty) && emailCtrl.errors){
+            this.emailMessage = Object.keys(emailCtrl.errors).map(key => this.emailValidationMessages[key]).join('')
+        }
+        if((emailConfirmCtrl.touched || emailConfirmCtrl.dirty) && emailConfirmCtrl.errors){
+            this.emailConfirmMessage = Object.keys(emailConfirmCtrl.errors).map(key => this.confirmEmailValidationMessages[key]).join('')
         }
     }
     
-    validationMessages = {
+    emailValidationMessages = {
         required: 'Please enter your email address.', 
         pattern: 'Email format is incorrect.'
+    }
+
+    confirmEmailValidationMessages = {
+        required: 'Please confirm your email address.', 
+        mismatch: 'Email does not match.'
     }
 
     save(){
@@ -119,5 +131,5 @@ function emailMatcher(absCtrl: AbstractControl){
     let confirmEmailCtrl = absCtrl.get('confirmEmail');
     if(emailCtrl.pristine || confirmEmailCtrl.pristine) return null;
     if(emailCtrl.value === confirmEmailCtrl.value) return null;
-    return {mismatch : true}
+    return {'mismatch' : true}
 }

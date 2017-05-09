@@ -16,9 +16,15 @@ var CustomerComponent = (function () {
     function CustomerComponent(fb) {
         this.fb = fb;
         this.customer = new customer_1.Customer();
-        this.validationMessages = {
+        this.emailMessage = '';
+        this.emailConfirmMessage = '';
+        this.emailValidationMessages = {
             required: 'Please enter your email address.',
             pattern: 'Email format is incorrect.'
+        };
+        this.confirmEmailValidationMessages = {
+            required: 'Please confirm your email address.',
+            mismatch: 'Email does not match.'
         };
     }
     CustomerComponent.prototype.ngOnInit = function () {
@@ -33,10 +39,9 @@ var CustomerComponent = (function () {
         this.customerForm = this.fb.group({
             firstName: ['', [forms_1.Validators.required, forms_1.Validators.minLength(3)]],
             lastName: ['', [forms_1.Validators.required, forms_1.Validators.maxLength(5), forms_1.Validators.minLength(3)]],
-            // emailGroup: ['',[Validators.required, Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
             emailGroup: this.fb.group({
                 email: ['', [forms_1.Validators.required, forms_1.Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
-                confirmEmail: ['', [forms_1.Validators.required]]
+                confirmEmail: ['', forms_1.Validators.required]
             }, { validator: emailMatcher }),
             phone: '',
             notification: '',
@@ -44,14 +49,21 @@ var CustomerComponent = (function () {
             rating: ['', [ratingRangeParam(1, 6)]] //customer validator
         });
         this.customerForm.get('notification').valueChanges.subscribe(function (value) { return _this.setNotification(value); });
-        var emailCtrl = this.customerForm.get('emailGroup.email');
-        emailCtrl.valueChanges.debounceTime(1000).subscribe(function (value) { return _this.setMessage(emailCtrl); });
+        var emailCtrl = this.customerForm.get('emailGroup');
+        emailCtrl.valueChanges.subscribe(function (value) { return _this.setMessage(emailCtrl); });
     };
     CustomerComponent.prototype.setMessage = function (absCtrl) {
         var _this = this;
-        this.emailMessage = '';
+        var emailCtrl = absCtrl.get('email');
+        var emailConfirmCtrl = absCtrl.get('confirmEmail');
         if ((absCtrl.touched || absCtrl.dirty) && absCtrl.errors) {
-            this.emailMessage = Object.keys(absCtrl.errors).map(function (key) { return _this.validationMessages[key]; }).join('');
+            this.emailConfirmMessage = Object.keys(absCtrl.errors).map(function (key) { return _this.confirmEmailValidationMessages[key]; }).join('');
+        }
+        if ((emailCtrl.touched || emailCtrl.dirty) && emailCtrl.errors) {
+            this.emailMessage = Object.keys(emailCtrl.errors).map(function (key) { return _this.emailValidationMessages[key]; }).join('');
+        }
+        if ((emailConfirmCtrl.touched || emailConfirmCtrl.dirty) && emailConfirmCtrl.errors) {
+            this.emailConfirmMessage = Object.keys(emailConfirmCtrl.errors).map(function (key) { return _this.confirmEmailValidationMessages[key]; }).join('');
         }
     };
     CustomerComponent.prototype.save = function () {
@@ -123,6 +135,6 @@ function emailMatcher(absCtrl) {
         return null;
     if (emailCtrl.value === confirmEmailCtrl.value)
         return null;
-    return { mismatch: true };
+    return { 'mismatch': true };
 }
 //# sourceMappingURL=customer.component.js.map

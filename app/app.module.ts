@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { FormPosterService } from './services/form-poster.service';
 import { CustomerComponent } from './home/customer.component'
 import { ReactiveFormsModule } from '@angular/forms'
+import { DynaFormComponent } from './home/dynaform.component'
 
 @NgModule({
   imports: [ 
@@ -20,10 +21,11 @@ import { ReactiveFormsModule } from '@angular/forms'
       {path: '', redirectTo: 'welcome', pathMatch: 'full'},
       {path: 'welcome', component: WelcomeComponent},     
       {path: 'forms', component: HomeComponent},
-      {path: 'reactiveforms', component: CustomerComponent}      
+      {path: 'reactiveforms', component: CustomerComponent},
+      {path: 'dynamicforms', component: DynaFormComponent}             
     ])
   ],
-  declarations: [ AppComponent, WelcomeComponent, HomeComponent, CustomerComponent ],
+  declarations: [ AppComponent, WelcomeComponent, HomeComponent, CustomerComponent, DynaFormComponent ],
   providers: [FormPosterService],
   bootstrap: [ AppComponent ]
 })

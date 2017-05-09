@@ -1,0 +1,26 @@
+<div class='panel panel-primary'>
+    <div class='panel-heading'>
+        Dynamic Forms
+    </div>
+    <div class='panel-body'>
+        <form class="form-horizontal" novalidate (ngSubmit)="save()" [formGroup]="dynamicForm">
+            <div class="form-group">
+                <div class="col-md-4">
+                    <span>
+                        <button class="btn btn-primary" type="button" (click)="addAddress()">Add Address</button>
+                    </span>
+                </div>
+            </div>
+            <div [formArrayName]="addresses" *ngFor="let address of addresses; let i=index">
+                <div [formGroupName]="i">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" attr.for="{{'addressTypeId'+i}}">Address Type</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="{{'addressTypeId'+i}}" placeholder="Address Type">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

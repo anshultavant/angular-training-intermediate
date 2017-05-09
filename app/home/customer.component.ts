@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { Customer } from '../models/customer';
 
 @Component({
@@ -31,7 +31,8 @@ export class CustomerComponent implements OnInit {
             email: ['',[Validators.required, Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
             phone: '',
             notification: '',
-            sendCatalog: true
+            sendCatalog: true,
+            rating: ['',[ratingRange]] //customer validator
         })
     }
 
@@ -40,17 +41,23 @@ export class CustomerComponent implements OnInit {
         console.log('Saved: '+ JSON.stringify(this.customerForm.value))
     }
 
-    populateTestData(){        
-        this.customerForm.setValue({
-            firstName: 'Anshul',
-            lastName: 'Khare',
-            email: 'anshul.khare@tavant.com',
-            phone: '1234567890',
-            notification: 'email',
-            sendCatalog: false
-        })
-
-        return false;
+    populateTestData(flag: string){
+        (flag === 'set') ?         
+            this.customerForm.setValue({
+                firstName: 'Anshul',
+                lastName: 'Khare',
+                email: 'anshul.khare@tavant.com',
+                phone: '1234567890',
+                notification: 'email',
+                sendCatalog: false,
+                rating: 0
+            })
+       :
+            this.customerForm.patchValue({ 
+                phone: '6666667890',      
+                notification: 'text',         
+                sendCatalog: true
+            })
     }
 
     setNotification(notifyVia: string){
@@ -62,4 +69,12 @@ export class CustomerComponent implements OnInit {
         }
         phoneControl.updateValueAndValidity();
     }
+}
+
+//Custom validator.
+function ratingRange(absCtrl: AbstractControl): {[key: string]:boolean}{
+    if(absCtrl.value != undefined && (isNaN(absCtrl.value) || absCtrl.value <1 || absCtrl.value > 5)){ 
+        return {range: true};   
+    }
+    return null;
 }

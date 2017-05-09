@@ -31,23 +31,31 @@ var CustomerComponent = (function () {
             email: ['', [forms_1.Validators.required, forms_1.Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
             phone: '',
             notification: '',
-            sendCatalog: true
+            sendCatalog: true,
+            rating: ['', [ratingRange]] //customer validator
         });
     };
     CustomerComponent.prototype.save = function () {
         console.log(this.customerForm);
         console.log('Saved: ' + JSON.stringify(this.customerForm.value));
     };
-    CustomerComponent.prototype.populateTestData = function () {
-        this.customerForm.setValue({
-            firstName: 'Anshul',
-            lastName: 'Khare',
-            email: 'anshul.khare@tavant.com',
-            phone: '1234567890',
-            notification: 'email',
-            sendCatalog: false
-        });
-        return false;
+    CustomerComponent.prototype.populateTestData = function (flag) {
+        (flag === 'set') ?
+            this.customerForm.setValue({
+                firstName: 'Anshul',
+                lastName: 'Khare',
+                email: 'anshul.khare@tavant.com',
+                phone: '1234567890',
+                notification: 'email',
+                sendCatalog: false,
+                rating: 0
+            })
+            :
+                this.customerForm.patchValue({
+                    phone: '6666667890',
+                    notification: 'text',
+                    sendCatalog: true
+                });
     };
     CustomerComponent.prototype.setNotification = function (notifyVia) {
         var phoneControl = this.customerForm.get('phone');
@@ -69,4 +77,11 @@ CustomerComponent = __decorate([
     __metadata("design:paramtypes", [forms_1.FormBuilder])
 ], CustomerComponent);
 exports.CustomerComponent = CustomerComponent;
+//Custom validator.
+function ratingRange(absCtrl) {
+    if (absCtrl.value != undefined && (isNaN(absCtrl.value) || absCtrl.value < 1 || absCtrl.value > 5)) {
+        return { range: true };
+    }
+    return null;
+}
 //# sourceMappingURL=customer.component.js.map

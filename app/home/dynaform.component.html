@@ -11,7 +11,7 @@
                     </span>
                 </div>
             </div>
-            <div [formArrayName]="addresses" *ngFor="let address of addresses; let i=index">
+            <div formArrayName="addresses" *ngFor="let address of dynamicForm.get('addresses').controls; let i=index">
                 <div [formGroupName]="i">
                     <div class="form-group">
                         <label class="col-md-2 control-label" attr.for="{{'addressTypeId'+i}}">Address Type</label>
@@ -19,6 +19,13 @@
                             <input type="text" class="form-control" id="{{'addressTypeId'+i}}" placeholder="Address Type">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" attr.for="{{'street1Id'+i}}">Street 1</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="{{'street1Id'+i}}" placeholder="Street 1">
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </form>

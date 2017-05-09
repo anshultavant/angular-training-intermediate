@@ -10,6 +10,7 @@ import { Customer } from '../models/customer';
 export class CustomerComponent implements OnInit {
     customerForm: FormGroup
     customer: Customer = new Customer();
+    emailMessage: string
 
     constructor(private fb: FormBuilder){
 
@@ -28,12 +29,32 @@ export class CustomerComponent implements OnInit {
         this.customerForm = this.fb.group({
             firstName: ['',[Validators.required, Validators.minLength(3)]],
             lastName: ['',[Validators.required, Validators.maxLength(5), Validators.minLength(3)]],
-            email: ['',[Validators.required, Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
+            // emailGroup: ['',[Validators.required, Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
+            emailGroup: this.fb.group({
+                email:['',[Validators.required, Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
+                confirmEmail:['',[Validators.required]]
+            }, {validator: emailMatcher}),
             phone: '',
             notification: '',
             sendCatalog: true,
             rating: ['',[ratingRangeParam(1,6)]] //customer validator
         })
+
+        this.customerForm.get('notification').valueChanges.subscribe(value => this.setNotification(value))
+        const emailCtrl = this.customerForm.get('emailGroup.email')
+        emailCtrl.valueChanges.debounceTime(1000).subscribe(value => this.setMessage(emailCtrl))
+    }
+
+    setMessage(absCtrl: AbstractControl): void{
+        this.emailMessage = ''
+        if((absCtrl.touched || absCtrl.dirty) && absCtrl.errors){
+            this.emailMessage = Object.keys(absCtrl.errors).map(key => this.validationMessages[key]).join('')
+        }
+    }
+    
+    validationMessages = {
+        required: 'Please enter your email address.', 
+        pattern: 'Email format is incorrect.'
     }
 
     save(){
@@ -46,7 +67,10 @@ export class CustomerComponent implements OnInit {
             this.customerForm.setValue({
                 firstName: 'Anshul',
                 lastName: 'Khare',
-                email: 'anshul.khare@tavant.com',
+                emailGroup: {
+                    email: 'anshul.khare@tavant.com',
+                    confirmEmail: ''
+                },
                 phone: '1234567890',
                 notification: 'email',
                 sendCatalog: false,
@@ -88,4 +112,12 @@ function ratingRangeParam(min: number, max: number): ValidatorFn{
         }
         return null;
     }
+}
+
+function emailMatcher(absCtrl: AbstractControl){
+    let emailCtrl = absCtrl.get('email');
+    let confirmEmailCtrl = absCtrl.get('confirmEmail');
+    if(emailCtrl.pristine || confirmEmailCtrl.pristine) return null;
+    if(emailCtrl.value === confirmEmailCtrl.value) return null;
+    return {mismatch : true}
 }

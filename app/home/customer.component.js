@@ -16,6 +16,10 @@ var CustomerComponent = (function () {
     function CustomerComponent(fb) {
         this.fb = fb;
         this.customer = new customer_1.Customer();
+        this.validationMessages = {
+            required: 'Please enter your email address.',
+            pattern: 'Email format is incorrect.'
+        };
     }
     CustomerComponent.prototype.ngOnInit = function () {
         // this.customerForm = new FormGroup({
@@ -25,15 +29,30 @@ var CustomerComponent = (function () {
         //     sendCatalog: new FormControl(true)
         // })
         // console.log('Inside OnInit of customer')
+        var _this = this;
         this.customerForm = this.fb.group({
             firstName: ['', [forms_1.Validators.required, forms_1.Validators.minLength(3)]],
             lastName: ['', [forms_1.Validators.required, forms_1.Validators.maxLength(5), forms_1.Validators.minLength(3)]],
-            email: ['', [forms_1.Validators.required, forms_1.Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
+            // emailGroup: ['',[Validators.required, Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
+            emailGroup: this.fb.group({
+                email: ['', [forms_1.Validators.required, forms_1.Validators.pattern("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+[.][a-zA-Z0-9]+")]],
+                confirmEmail: ['', [forms_1.Validators.required]]
+            }, { validator: emailMatcher }),
             phone: '',
             notification: '',
             sendCatalog: true,
             rating: ['', [ratingRangeParam(1, 6)]] //customer validator
         });
+        this.customerForm.get('notification').valueChanges.subscribe(function (value) { return _this.setNotification(value); });
+        var emailCtrl = this.customerForm.get('emailGroup.email');
+        emailCtrl.valueChanges.debounceTime(1000).subscribe(function (value) { return _this.setMessage(emailCtrl); });
+    };
+    CustomerComponent.prototype.setMessage = function (absCtrl) {
+        var _this = this;
+        this.emailMessage = '';
+        if ((absCtrl.touched || absCtrl.dirty) && absCtrl.errors) {
+            this.emailMessage = Object.keys(absCtrl.errors).map(function (key) { return _this.validationMessages[key]; }).join('');
+        }
     };
     CustomerComponent.prototype.save = function () {
         console.log(this.customerForm);
@@ -44,7 +63,10 @@ var CustomerComponent = (function () {
             this.customerForm.setValue({
                 firstName: 'Anshul',
                 lastName: 'Khare',
-                email: 'anshul.khare@tavant.com',
+                emailGroup: {
+                    email: 'anshul.khare@tavant.com',
+                    confirmEmail: ''
+                },
                 phone: '1234567890',
                 notification: 'email',
                 sendCatalog: false,
@@ -93,5 +115,14 @@ function ratingRangeParam(min, max) {
         }
         return null;
     };
+}
+function emailMatcher(absCtrl) {
+    var emailCtrl = absCtrl.get('email');
+    var confirmEmailCtrl = absCtrl.get('confirmEmail');
+    if (emailCtrl.pristine || confirmEmailCtrl.pristine)
+        return null;
+    if (emailCtrl.value === confirmEmailCtrl.value)
+        return null;
+    return { mismatch: true };
 }
 //# sourceMappingURL=customer.component.js.map

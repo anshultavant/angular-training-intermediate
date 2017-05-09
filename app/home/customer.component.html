@@ -36,19 +36,38 @@
                         </span>
                     </div>
                 </div>
-                <div class="form-group" 
-                    [ngClass]="{'has-error': (customerForm.get('email').touched || customerForm.get('email').dirty) && !customerForm.get('email').valid}">
+                <div class="form-group" formGroupName="emailGroup"
+                    [ngClass]="{'has-error': customerForm.get('emailGroup').errors}">
+                    <div class="col-md-10">
                     <label class='col-md-2 control-label'>Email</label>
                     <div class='col-md-8'>
                         <input class="form-control" formControlName="email" type="text">
-                        <span class="help-block" *ngIf="(customerForm.get('email').touched || customerForm.get('email').dirty) && customerForm.get('email').errors">
-                            <span *ngIf="customerForm.get('email').errors.required">
+                        <span class="help-block" *ngIf="(customerForm.get('emailGroup.email').touched || 
+                                                            customerForm.get('emailGroup.email').dirty) && customerForm.get('emailGroup.email').errors">
+                            <span>{{emailMessage}}</span>
+                            <span *ngIf="customerForm.get('emailGroup.email').errors.required">
                                 Please enter your Email.
-                            </span>
-                            <span *ngIf="customerForm.get('email').errors.minlength">
-                                The last name must be longer than 5 characters.
-                            </span>
+                            </span> 
+                            <span *ngIf="customerForm.get('emailGroup.email').errors.pattern">
+                                Incorrect email address.
+                            </span>                 
                         </span>
+                    </div>  
+                    </div>
+                    <div class="col-md-10">             
+                    <label class='col-md-2 control-label'>Confirm Email</label>
+                    <div class='col-md-8'>
+                        <input class="form-control" formControlName="confirmEmail" type="text">
+                        <span class="help-block" *ngIf="(customerForm.get('emailGroup.confirmEmail').touched || 
+                                                            customerForm.get('emailGroup.confirmEmail').dirty) && customerForm.get('emailGroup.confirmEmail').errors">
+                            <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors.required">
+                                Please confirm your email address.  
+                            </span>  
+                            <span *ngIf="customerForm.get('emailGroup.confirmEmail').errors?.mismatch">
+                                Emails don't match.  
+                            </span>                         
+                        </span>
+                    </div>
                     </div>
                 </div>
                 <div class="form-group" 
@@ -67,10 +86,10 @@
                     <label class='col-md-2 control-label'>Send Notification</label>
                     <div class='col-md-8'>
                         <label class="radio-inline">
-                            <input type="radio" value="email" formControlName="notification" (click)="setNotification('email')">Email
+                            <input type="radio" value="email" formControlName="notification">Email
                         </label>
                         <label class="radio-inline">
-                            <input type="radio" value="text" formControlName="notification" (click)="setNotification('text')">Text
+                            <input type="radio" value="text" formControlName="notification">Text
                         </label>
                     </div>
                 </div>
@@ -111,3 +130,7 @@
 <br> Dirty: {{customerForm.dirty}}
 <br> Touched: {{customerForm.touched}}
 <br> Phone touched: {{customerForm.get('phone').touched}}
+<br> Confirm Email Touched: {{customerForm.get('emailGroup.confirmEmail').touched}}
+<br> Confirm Email Dirty: {{customerForm.get('emailGroup.confirmEmail').dirty}}
+<br> Confirm Email Errors: {{customerForm.get('emailGroup.email').errors}}
+<br> Confirm Email mismatch: {{customerForm.get('emailGroup.confirmEmail').errors?.mismatch}}

@@ -32,7 +32,7 @@ var CustomerComponent = (function () {
             phone: '',
             notification: '',
             sendCatalog: true,
-            rating: ['', [ratingRange]] //customer validator
+            rating: ['', [ratingRangeParam(1, 6)]] //customer validator
         });
     };
     CustomerComponent.prototype.save = function () {
@@ -61,6 +61,7 @@ var CustomerComponent = (function () {
         var phoneControl = this.customerForm.get('phone');
         if (notifyVia === 'text') {
             phoneControl.setValidators(forms_1.Validators.required);
+            // phoneControl.markAsDirty;
         }
         else {
             phoneControl.clearValidators();
@@ -83,5 +84,14 @@ function ratingRange(absCtrl) {
         return { range: true };
     }
     return null;
+}
+//Custom validator - parameterizd
+function ratingRangeParam(min, max) {
+    return function (absCtrl) {
+        if (absCtrl.value != undefined && (isNaN(absCtrl.value) || absCtrl.value < min || absCtrl.value > max)) {
+            return { range: true };
+        }
+        return null;
+    };
 }
 //# sourceMappingURL=customer.component.js.map

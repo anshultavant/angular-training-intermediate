@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl, ValidatorFn } from '@angular/forms';
 import { Customer } from '../models/customer';
 
 @Component({
@@ -32,7 +32,7 @@ export class CustomerComponent implements OnInit {
             phone: '',
             notification: '',
             sendCatalog: true,
-            rating: ['',[ratingRange]] //customer validator
+            rating: ['',[ratingRangeParam(1,6)]] //customer validator
         })
     }
 
@@ -63,7 +63,8 @@ export class CustomerComponent implements OnInit {
     setNotification(notifyVia: string){
         const phoneControl = this.customerForm.get('phone')
         if(notifyVia === 'text'){
-            phoneControl.setValidators(Validators.required)
+            phoneControl.setValidators(Validators.required);
+            // phoneControl.markAsDirty;
         } else {
             phoneControl.clearValidators()
         }
@@ -77,4 +78,14 @@ function ratingRange(absCtrl: AbstractControl): {[key: string]:boolean}{
         return {range: true};   
     }
     return null;
+}
+
+//Custom validator - parameterizd
+function ratingRangeParam(min: number, max: number): ValidatorFn{
+    return (absCtrl: AbstractControl): {[key: string]:boolean} =>{
+        if(absCtrl.value != undefined && (isNaN(absCtrl.value) || absCtrl.value < min || absCtrl.value > max)){ 
+            return {range: true};   
+        }
+        return null;
+    }
 }
